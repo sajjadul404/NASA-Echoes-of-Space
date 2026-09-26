@@ -1,33 +1,24 @@
-import React, { useState } from 'react';
-import { TIMELINE_EVENTS, TimelineEvent } from '../data/timelineData';
-import { MACHINES_DATA } from '../data/machinesData';
-import { Calendar, ChevronRight, Compass, Eye, Sparkles } from 'lucide-react';
-import { PageId } from '../components/Navbar';
-import { cosmicAudio } from '../utils/audioNarration';
-
-interface TimelinePageProps {
-  onNavigate: (page: PageId, machineId?: string) => void;
-  onSelectMachineId: (machineId: string) => void;
-}
-
-export const TimelinePage: React.FC<TimelinePageProps> = ({ onNavigate, onSelectMachineId }) => {
-  const [targetFilter, setTargetFilter] = useState<'All' | 'Moon' | 'Mars' | 'Deep Space'>('All');
-
+import { useState } from "react";
+import { TIMELINE_EVENTS } from "../data/timelineData";
+import { MACHINES_DATA } from "../data/machinesData";
+import { Calendar, ChevronRight, Compass, Eye, Sparkles } from "lucide-react";
+import { cosmicAudio } from "../utils/audioNarration";
+export const TimelinePage = ({ onNavigate, onSelectMachineId }) => {
+  const [targetFilter, setTargetFilter] = useState("All");
   const filteredEvents = TIMELINE_EVENTS.filter((e) => {
-    if (targetFilter === 'All') return true;
+    if (targetFilter === "All") return true;
     return e.targetBody === targetFilter;
   });
-
-  const handleOpenMachine = (machineId: string) => {
+  const handleOpenMachine = (machineId) => {
     cosmicAudio.playTelemetryPing(880, 0.1);
     onSelectMachineId(machineId);
-    onNavigate('detail', machineId);
+    onNavigate("detail", machineId);
   };
-
-  return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+  return <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
       
-      {/* Header & Filter Controls */}
+      {
+    /* Header & Filter Controls */
+  }
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
         <div>
           <div className="text-xs font-mono uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
@@ -42,52 +33,48 @@ export const TimelinePage: React.FC<TimelinePageProps> = ({ onNavigate, onSelect
           </p>
         </div>
 
-        {/* Filter Segmented Control */}
+        {
+    /* Filter Segmented Control */
+  }
         <div className="flex items-center gap-1 p-1 bg-slate-900 border border-slate-800 rounded-xl self-start md:self-auto">
-          {(['All', 'Moon', 'Mars', 'Deep Space'] as const).map((dest) => (
-            <button
-              key={dest}
-              onClick={() => {
-                cosmicAudio.playTelemetryPing(660, 0.08);
-                setTargetFilter(dest);
-              }}
-              className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer whitespace-nowrap ${
-                targetFilter === dest
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
+          {["All", "Moon", "Mars", "Deep Space"].map((dest) => <button
+    key={dest}
+    onClick={() => {
+      cosmicAudio.playTelemetryPing(660, 0.08);
+      setTargetFilter(dest);
+    }}
+    className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer whitespace-nowrap ${targetFilter === dest ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm" : "text-slate-400 hover:text-slate-200"}`}
+  >
               {dest}
-            </button>
-          ))}
+            </button>)}
         </div>
       </div>
 
-      {/* Timeline Stream */}
+      {
+    /* Timeline Stream */
+  }
       <div className="relative pl-6 sm:pl-8 border-l-2 border-slate-800 space-y-12">
         {filteredEvents.map((evt, idx) => {
-          const associatedMachine = MACHINES_DATA.find((m) => m.id === evt.machineId);
-
-          return (
-            <div key={idx} className="relative group">
+    const associatedMachine = MACHINES_DATA.find((m) => m.id === evt.machineId);
+    return <div key={idx} className="relative group">
               
-              {/* Timeline Node Point */}
+              {
+      /* Timeline Node Point */
+    }
               <div
-                className={`absolute -left-[31px] sm:-left-[39px] top-1.5 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-transform group-hover:scale-125 ${
-                  evt.targetBody === 'Moon'
-                    ? 'bg-slate-900 border-cyan-400 text-cyan-300'
-                    : evt.targetBody === 'Mars'
-                    ? 'bg-slate-900 border-amber-500 text-amber-400'
-                    : 'bg-slate-900 border-indigo-400 text-indigo-300'
-                }`}
-              >
+      className={`absolute -left-[31px] sm:-left-[39px] top-1.5 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-transform group-hover:scale-125 ${evt.targetBody === "Moon" ? "bg-slate-900 border-cyan-400 text-cyan-300" : evt.targetBody === "Mars" ? "bg-slate-900 border-amber-500 text-amber-400" : "bg-slate-900 border-indigo-400 text-indigo-300"}`}
+    >
                 <div className="w-2 h-2 rounded-full bg-current" />
               </div>
 
-              {/* Event Content Card */}
+              {
+      /* Event Content Card */
+    }
               <div className="p-6 rounded-2xl bg-slate-900/70 border border-slate-800 group-hover:border-slate-700 transition-all shadow-xl space-y-4">
                 
-                {/* Year & Date Row */}
+                {
+      /* Year & Date Row */
+    }
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span className="text-xl sm:text-2xl font-black font-mono text-cyan-400">
@@ -103,7 +90,9 @@ export const TimelinePage: React.FC<TimelinePageProps> = ({ onNavigate, onSelect
                   </span>
                 </div>
 
-                {/* Title & Summary */}
+                {
+      /* Title & Summary */
+    }
                 <div>
                   <h3 className="text-lg sm:text-xl font-bold text-slate-100 group-hover:text-cyan-300 transition-colors">
                     {evt.title}
@@ -113,7 +102,9 @@ export const TimelinePage: React.FC<TimelinePageProps> = ({ onNavigate, onSelect
                   </p>
                 </div>
 
-                {/* Science Impact & Hardware details */}
+                {
+      /* Science Impact & Hardware details */
+    }
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
                     <div className="text-[11px] font-mono text-amber-400 flex items-center gap-1.5">
@@ -136,31 +127,29 @@ export const TimelinePage: React.FC<TimelinePageProps> = ({ onNavigate, onSelect
                   </div>
                 </div>
 
-                {/* Action Footer */}
+                {
+      /* Action Footer */
+    }
                 <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-slate-800/80 text-xs font-mono">
                   <span className="text-slate-500">
                     PRESENT: <span className="text-slate-300">{evt.legacyStatus}</span>
                   </span>
 
-                  {evt.machineId && (
-                    <button
-                      onClick={() => handleOpenMachine(evt.machineId!)}
-                      className="inline-flex items-center gap-1.5 text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer"
-                    >
+                  {evt.machineId && <button
+      onClick={() => handleOpenMachine(evt.machineId)}
+      className="inline-flex items-center gap-1.5 text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer"
+    >
                       <Eye className="w-3.5 h-3.5" />
-                      <span>Inspect {associatedMachine?.name || 'Machine'}</span>
+                      <span>Inspect {associatedMachine?.name || "Machine"}</span>
                       <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                  )}
+                    </button>}
                 </div>
 
               </div>
 
-            </div>
-          );
-        })}
+            </div>;
+  })}
       </div>
 
-    </div>
-  );
+    </div>;
 };

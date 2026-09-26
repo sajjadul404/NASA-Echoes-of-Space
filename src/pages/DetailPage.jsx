@@ -1,42 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Volume2, VolumeX, ArrowLeft, Sparkles, MapPin, Calendar, Compass, Shield, BookOpen, Layers } from 'lucide-react';
-import { Machine } from '../data/machinesData';
-import { cosmicAudio } from '../utils/audioNarration';
-import { searchNasaImages, NasaImageResult } from '../services/nasaService';
-import { PageId } from '../components/Navbar';
-
-interface DetailPageProps {
-  machine: Machine;
-  onBack: () => void;
-  onNavigate: (page: PageId, machineId?: string) => void;
-  onMarkVisited?: (machineId: string) => void;
-}
-
-export const DetailPage: React.FC<DetailPageProps> = ({
+import { useState, useEffect } from "react";
+import { Volume2, VolumeX, ArrowLeft, Sparkles, MapPin, Calendar, Compass, BookOpen, Layers } from "lucide-react";
+import { cosmicAudio } from "../utils/audioNarration";
+import { searchNasaImages } from "../services/nasaService";
+export const DetailPage = ({
   machine,
   onBack,
   onNavigate,
   onMarkVisited
 }) => {
   const [isNarrating, setIsNarrating] = useState(false);
-  const [nasaImages, setNasaImages] = useState<NasaImageResult[]>([]);
+  const [nasaImages, setNasaImages] = useState([]);
   const [loadingImages, setLoadingImages] = useState(false);
-
   useEffect(() => {
     onMarkVisited?.(machine.id);
-
-    // Search NASA image archive for this mission
     setLoadingImages(true);
-    searchNasaImages(machine.name)
-      .then(images => setNasaImages(images))
-      .catch(() => {})
-      .finally(() => setLoadingImages(false));
-
+    searchNasaImages(machine.name).then((images) => setNasaImages(images)).catch(() => {
+    }).finally(() => setLoadingImages(false));
     return () => {
       cosmicAudio.stopSpeaking();
     };
   }, [machine, onMarkVisited]);
-
   const toggleNarration = () => {
     if (isNarrating) {
       cosmicAudio.stopSpeaking();
@@ -50,39 +33,41 @@ export const DetailPage: React.FC<DetailPageProps> = ({
       );
     }
   };
-
-  return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+  return <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
       
-      {/* Back button and quick actions */}
+      {
+    /* Back button and quick actions */
+  }
       <div className="flex items-center justify-between border-b border-slate-800 pb-4">
         <button
-          onClick={onBack}
-          className="flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-slate-100 transition-colors cursor-pointer"
-        >
+    onClick={onBack}
+    className="flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-slate-100 transition-colors cursor-pointer"
+  >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Explorer</span>
         </button>
 
         <div className="flex items-center gap-3">
           <button
-            onClick={() => onNavigate('story')}
-            className="flex items-center gap-1.5 text-xs text-cyan-400 hover:text-cyan-300 cursor-pointer font-medium"
-          >
+    onClick={() => onNavigate("story")}
+    className="flex items-center gap-1.5 text-xs text-cyan-400 hover:text-cyan-300 cursor-pointer font-medium"
+  >
             <BookOpen className="w-3.5 h-3.5" />
             <span>Story Mode</span>
           </button>
           <button
-            onClick={() => onNavigate('science')}
-            className="flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 cursor-pointer font-medium"
-          >
+    onClick={() => onNavigate("science")}
+    className="flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 cursor-pointer font-medium"
+  >
             <Layers className="w-3.5 h-3.5" />
             <span>Science Lab</span>
           </button>
         </div>
       </div>
 
-      {/* A. Header Section */}
+      {
+    /* A. Header Section */
+  }
       <section className="space-y-4">
         <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-cyan-400">
           <span>{machine.targetBody.toUpperCase()}</span>
@@ -115,17 +100,21 @@ export const DetailPage: React.FC<DetailPageProps> = ({
         </div>
       </section>
 
-      {/* Hero Visual & Audio Narration Card */}
+      {
+    /* Hero Visual & Audio Narration Card */
+  }
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        {/* Machine Image */}
+        {
+    /* Machine Image */
+  }
         <div className="lg:col-span-6 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl relative aspect-[4/3]">
           <img
-            src={machine.image}
-            alt={machine.name}
-            className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
-          />
+    src={machine.image}
+    alt={machine.name}
+    className="w-full h-full object-cover"
+    referrerPolicy="no-referrer"
+  />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
           
           <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs font-mono text-slate-300">
@@ -134,10 +123,14 @@ export const DetailPage: React.FC<DetailPageProps> = ({
           </div>
         </div>
 
-        {/* B. "Who am I?" & G. "Listen to my story" */}
+        {
+    /* B. "Who am I?" & G. "Listen to my story" */
+  }
         <div className="lg:col-span-6 space-y-6">
           
-          {/* Who Am I */}
+          {
+    /* Who Am I */
+  }
           <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
             <div className="text-xs font-mono uppercase tracking-wider text-cyan-400">
               Section B · Who am I?
@@ -147,18 +140,18 @@ export const DetailPage: React.FC<DetailPageProps> = ({
             </p>
           </div>
 
-          {/* G. Audio Narration Panel */}
+          {
+    /* G. Audio Narration Panel */
+  }
           <div className="p-6 rounded-2xl bg-gradient-to-br from-cyan-950/30 to-slate-900/90 border border-cyan-500/30 shadow-xl space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs font-mono text-cyan-300">
                 <Volume2 className="w-4 h-4" />
                 <span>VOICE NARRATION</span>
               </div>
-              {isNarrating && (
-                <span className="text-[10px] font-mono text-cyan-400 animate-pulse">
+              {isNarrating && <span className="text-[10px] font-mono text-cyan-400 animate-pulse">
                   TRANSMITTING AUDIO...
-                </span>
-              )}
+                </span>}
             </div>
 
             <p className="text-xs text-slate-300 italic leading-relaxed">
@@ -166,31 +159,25 @@ export const DetailPage: React.FC<DetailPageProps> = ({
             </p>
 
             <button
-              onClick={toggleNarration}
-              className={`w-full py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg ${
-                isNarrating
-                  ? 'bg-rose-500 hover:bg-rose-400 text-white'
-                  : 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-cyan-950/50'
-              }`}
-            >
-              {isNarrating ? (
-                <>
+    onClick={toggleNarration}
+    className={`w-full py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg ${isNarrating ? "bg-rose-500 hover:bg-rose-400 text-white" : "bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-cyan-950/50"}`}
+  >
+              {isNarrating ? <>
                   <VolumeX className="w-4 h-4" />
                   <span>Pause Machine Narration</span>
-                </>
-              ) : (
-                <>
+                </> : <>
                   <Volume2 className="w-4 h-4" />
                   <span>Listen to My Story (Voice Audio)</span>
-                </>
-              )}
+                </>}
             </button>
           </div>
 
         </div>
       </div>
 
-      {/* C. "My Mission" Section */}
+      {
+    /* C. "My Mission" Section */
+  }
       <section className="p-6 sm:p-8 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-4">
         <div className="text-xs font-mono uppercase tracking-wider text-cyan-400">
           Section C · My Mission
@@ -236,7 +223,9 @@ export const DetailPage: React.FC<DetailPageProps> = ({
         </div>
       </section>
 
-      {/* D. "What I Discovered" (Science Section in Simple Language) */}
+      {
+    /* D. "What I Discovered" (Science Section in Simple Language) */
+  }
       <section className="p-6 sm:p-8 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-4">
         <div className="text-xs font-mono uppercase tracking-wider text-amber-400">
           Section D · What I Discovered
@@ -249,23 +238,25 @@ export const DetailPage: React.FC<DetailPageProps> = ({
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-          {machine.whatIDiscovered.map((discovery, idx) => (
-            <div key={idx} className="p-5 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+          {machine.whatIDiscovered.map((discovery, idx) => <div key={idx} className="p-5 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
               <div className="w-7 h-7 rounded-lg bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-400 text-xs font-bold font-mono">
                 0{idx + 1}
               </div>
               <p className="text-xs text-slate-300 leading-relaxed">
                 {discovery}
               </p>
-            </div>
-          ))}
+            </div>)}
         </div>
       </section>
 
-      {/* E. "Where am I now?" & F. "Fun Fact" */}
+      {
+    /* E. "Where am I now?" & F. "Fun Fact" */
+  }
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
-        {/* E. Where Am I Now */}
+        {
+    /* E. Where Am I Now */
+  }
         <div className="p-6 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-3">
           <div className="text-xs font-mono uppercase tracking-wider text-cyan-400">
             Section E · Where am I now?
@@ -275,13 +266,13 @@ export const DetailPage: React.FC<DetailPageProps> = ({
             {machine.whereAmINow}
           </p>
           <div className="pt-2 text-xs font-mono text-slate-400">
-            Coordinates: {machine.coordinates.lat !== undefined 
-              ? `${machine.coordinates.lat}° N/S, ${machine.coordinates.lng}° E/W` 
-              : `${machine.coordinates.distanceAU} AU from Sun`}
+            Coordinates: {machine.coordinates.lat !== void 0 ? `${machine.coordinates.lat}\xB0 N/S, ${machine.coordinates.lng}\xB0 E/W` : `${machine.coordinates.distanceAU} AU from Sun`}
           </div>
         </div>
 
-        {/* F. Fun Fact */}
+        {
+    /* F. Fun Fact */
+  }
         <div className="p-6 rounded-2xl bg-gradient-to-br from-amber-950/30 to-slate-900/90 border border-amber-500/30 space-y-3">
           <div className="text-xs font-mono uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5" />
@@ -295,7 +286,9 @@ export const DetailPage: React.FC<DetailPageProps> = ({
 
       </div>
 
-      {/* NASA Open Image Gallery Section */}
+      {
+    /* NASA Open Image Gallery Section */
+  }
       <section className="p-6 sm:p-8 rounded-2xl bg-slate-900/50 border border-slate-800 space-y-4">
         <div className="flex items-center justify-between">
           <div>
@@ -311,40 +304,34 @@ export const DetailPage: React.FC<DetailPageProps> = ({
           </span>
         </div>
 
-        {loadingImages ? (
-          <div className="py-12 text-center text-xs text-slate-500 font-mono animate-pulse">
+        {loadingImages ? <div className="py-12 text-center text-xs text-slate-500 font-mono animate-pulse">
             Searching NASA visual library for {machine.name}...
-          </div>
-        ) : nasaImages.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-            {nasaImages.map((img) => (
-              <div
-                key={img.nasa_id}
-                className="group aspect-video rounded-lg overflow-hidden bg-slate-950 border border-slate-800 relative cursor-pointer"
-                title={img.title}
-              >
+          </div> : nasaImages.length > 0 ? <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+            {nasaImages.map((img) => <div
+    key={img.nasa_id}
+    className="group aspect-video rounded-lg overflow-hidden bg-slate-950 border border-slate-800 relative cursor-pointer"
+    title={img.title}
+  >
                 <img
-                  src={img.imageUrl}
-                  alt={img.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  referrerPolicy="no-referrer"
-                />
+    src={img.imageUrl}
+    alt={img.title}
+    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+    referrerPolicy="no-referrer"
+  />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-2 flex items-end">
                   <p className="text-[10px] text-slate-200 line-clamp-2 leading-tight">
                     {img.title}
                   </p>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="py-6 text-center text-xs text-slate-500">
+              </div>)}
+          </div> : <div className="py-6 text-center text-xs text-slate-500">
             Primary archival photography loaded in main header.
-          </div>
-        )}
+          </div>}
       </section>
 
-      {/* Action Footer */}
+      {
+    /* Action Footer */
+  }
       <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
           <div className="text-xs font-bold text-slate-200">
@@ -356,13 +343,12 @@ export const DetailPage: React.FC<DetailPageProps> = ({
         </div>
 
         <button
-          onClick={() => onNavigate('games')}
-          className="px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer shrink-0"
-        >
+    onClick={() => onNavigate("games")}
+    className="px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer shrink-0"
+  >
           Play Game Zone
         </button>
       </div>
 
-    </div>
-  );
+    </div>;
 };
