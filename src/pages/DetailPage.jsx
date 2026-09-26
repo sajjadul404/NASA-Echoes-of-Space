@@ -1,7 +1,21 @@
 import { useState, useEffect } from "react";
-import { Volume2, VolumeX, ArrowLeft, Sparkles, MapPin, Calendar, Compass, BookOpen, Layers } from "lucide-react";
+import { 
+  Volume2, 
+  VolumeX, 
+  ArrowLeft, 
+  Sparkles, 
+  MapPin, 
+  Calendar, 
+  Compass, 
+  BookOpen, 
+  Layers,
+  Award,
+  CheckCircle2,
+  Play
+} from "lucide-react";
 import { cosmicAudio } from "../utils/audioNarration";
 import { searchNasaImages } from "../services/nasaService";
+
 export const DetailPage = ({
   machine,
   onBack,
@@ -11,15 +25,20 @@ export const DetailPage = ({
   const [isNarrating, setIsNarrating] = useState(false);
   const [nasaImages, setNasaImages] = useState([]);
   const [loadingImages, setLoadingImages] = useState(false);
+
   useEffect(() => {
     onMarkVisited?.(machine.id);
     setLoadingImages(true);
-    searchNasaImages(machine.name).then((images) => setNasaImages(images)).catch(() => {
-    }).finally(() => setLoadingImages(false));
+    searchNasaImages(machine.name)
+      .then((images) => setNasaImages(images))
+      .catch(() => {})
+      .finally(() => setLoadingImages(false));
+
     return () => {
       cosmicAudio.stopSpeaking();
     };
   }, [machine, onMarkVisited]);
+
   const toggleNarration = () => {
     if (isNarrating) {
       cosmicAudio.stopSpeaking();
@@ -33,125 +52,111 @@ export const DetailPage = ({
       );
     }
   };
-  return <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+
+  return (
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6 pb-20">
       
-      {
-    /* Back button and quick actions */
-  }
-      <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+      {/* Top Bar: Back & Quick Jump */}
+      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
         <button
-    onClick={onBack}
-    className="flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-slate-100 transition-colors cursor-pointer"
-  >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Explorer</span>
+          onClick={onBack}
+          className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-300 hover:text-white bg-slate-900 border border-slate-700 hover:border-cyan-400 px-3 py-1.5 rounded-xl transition-all cursor-pointer shadow-sm hover:scale-102"
+        >
+          <ArrowLeft className="w-4 h-4 text-cyan-400" />
+          <span>Back to All Robots</span>
         </button>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
-    onClick={() => onNavigate("story")}
-    className="flex items-center gap-1.5 text-xs text-cyan-400 hover:text-cyan-300 cursor-pointer font-medium"
-  >
+            onClick={() => onNavigate("story")}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-400/30 rounded-xl transition-colors cursor-pointer"
+          >
             <BookOpen className="w-3.5 h-3.5" />
-            <span>Story Mode</span>
+            <span>Story Book</span>
           </button>
           <button
-    onClick={() => onNavigate("science")}
-    className="flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 cursor-pointer font-medium"
-  >
-            <Layers className="w-3.5 h-3.5" />
-            <span>Science Lab</span>
+            onClick={() => onNavigate("games")}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-400/30 rounded-xl transition-colors cursor-pointer"
+          >
+            <Award className="w-3.5 h-3.5" />
+            <span>Win Medal</span>
           </button>
         </div>
       </div>
 
-      {
-    /* A. Header Section */
-  }
-      <section className="space-y-4">
-        <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-cyan-400">
-          <span>{machine.targetBody.toUpperCase()}</span>
-          <span aria-hidden="true">·</span>
-          <span>{machine.mission}</span>
-          <span aria-hidden="true">·</span>
-          <span>LAUNCHED {machine.year}</span>
-        </div>
-
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-100 tracking-tight">
-              {machine.name}
-            </h1>
-            <div className="flex items-center gap-2 text-xs text-slate-400 mt-2">
-              <MapPin className="w-4 h-4 text-rose-400" />
-              <span>{machine.location}</span>
-            </div>
+      {/* Main Title & Destination */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-bold text-cyan-400">
+            <span>{machine.targetBody === "Mars" ? "🔴 MARS" : machine.targetBody === "Moon" ? "🌕 THE MOON" : "🌌 DEEP SPACE"}</span>
+            <span>·</span>
+            <span>LAUNCHED IN {machine.year}</span>
           </div>
-
-          <div className="flex items-center gap-3 self-start md:self-auto">
-            <span className="px-3 py-1 bg-slate-900 border border-slate-700 rounded-lg text-xs font-mono capitalize text-slate-200">
-              Type: {machine.type}
-            </span>
-            <span className="px-3 py-1 bg-emerald-950/40 border border-emerald-500/40 rounded-lg text-xs font-mono capitalize text-emerald-400 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              {machine.status}
-            </span>
+          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight mt-0.5">
+            {machine.name}
+          </h1>
+          <div className="flex items-center gap-1.5 text-xs text-slate-400 mt-1">
+            <MapPin className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+            <span>{machine.location}</span>
           </div>
         </div>
-      </section>
 
-      {
-    /* Hero Visual & Audio Narration Card */
-  }
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Status Pill */}
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <span className="px-3 py-1 bg-emerald-950/40 border border-emerald-500/40 rounded-full text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Status: {machine.status}</span>
+          </span>
+        </div>
+      </div>
+
+      {/* Hero Visual & Big Read-To-Me Button */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
         
-        {
-    /* Machine Image */
-  }
-        <div className="lg:col-span-6 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl relative aspect-[4/3]">
+        {/* Machine Image */}
+        <div className="md:col-span-6 rounded-3xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl relative aspect-[4/3]">
           <img
-    src={machine.image}
-    alt={machine.name}
-    className="w-full h-full object-cover"
-    referrerPolicy="no-referrer"
-  />
+            src={machine.image}
+            alt={machine.name}
+            className="w-full h-full object-cover"
+            referrerPolicy="no-referrer"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
           
-          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs font-mono text-slate-300">
-            <span>OFFICIAL NASA ARTIFACT</span>
+          <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-xs font-bold text-amber-300">
+            <span>⭐ OFFICIAL NASA ARTIFACT</span>
             <span>{machine.badge}</span>
           </div>
         </div>
 
-        {
-    /* B. "Who am I?" & G. "Listen to my story" */
-  }
-        <div className="lg:col-span-6 space-y-6">
+        {/* Read-To-Me Voice Card */}
+        <div className="md:col-span-6 space-y-4">
           
-          {
-    /* Who Am I */
-  }
-          <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
-            <div className="text-xs font-mono uppercase tracking-wider text-cyan-400">
-              Section B · Who am I?
+          {/* Who am I bubble */}
+          <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+            <div className="text-xs font-bold text-cyan-400 uppercase tracking-wide">
+              Who Am I?
             </div>
-            <p className="text-base text-slate-200 leading-relaxed font-medium">
+            <p className="text-base text-white font-medium leading-relaxed">
               “{machine.whoAmI}”
             </p>
           </div>
 
-          {
-    /* G. Audio Narration Panel */
-  }
-          <div className="p-6 rounded-2xl bg-gradient-to-br from-cyan-950/30 to-slate-900/90 border border-cyan-500/30 shadow-xl space-y-4">
+          {/* Big Voice Player */}
+          <div className="p-5 rounded-2xl bg-gradient-to-br from-cyan-950/40 to-slate-900 border border-cyan-400/40 shadow-xl space-y-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs font-mono text-cyan-300">
-                <Volume2 className="w-4 h-4" />
-                <span>VOICE NARRATION</span>
-              </div>
-              {isNarrating && <span className="text-[10px] font-mono text-cyan-400 animate-pulse">
-                  TRANSMITTING AUDIO...
-                </span>}
+              <span className="text-xs font-black text-cyan-300 flex items-center gap-1.5">
+                <Volume2 className="w-4 h-4 text-cyan-400" />
+                <span>Listen to {machine.name}!</span>
+              </span>
+              {isNarrating && (
+                <span className="flex gap-1 items-end h-4">
+                  <span className="soundwave-bar" style={{ animationDelay: "0s" }} />
+                  <span className="soundwave-bar" style={{ animationDelay: "0.2s" }} />
+                  <span className="soundwave-bar" style={{ animationDelay: "0.4s" }} />
+                  <span className="soundwave-bar" style={{ animationDelay: "0.6s" }} />
+                </span>
+              )}
             </div>
 
             <p className="text-xs text-slate-300 italic leading-relaxed">
@@ -159,196 +164,128 @@ export const DetailPage = ({
             </p>
 
             <button
-    onClick={toggleNarration}
-    className={`w-full py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg ${isNarrating ? "bg-rose-500 hover:bg-rose-400 text-white" : "bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-cyan-950/50"}`}
-  >
-              {isNarrating ? <>
-                  <VolumeX className="w-4 h-4" />
-                  <span>Pause Machine Narration</span>
-                </> : <>
-                  <Volume2 className="w-4 h-4" />
-                  <span>Listen to My Story (Voice Audio)</span>
-                </>}
+              onClick={toggleNarration}
+              className={`w-full py-3.5 px-4 rounded-xl text-sm font-black transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg hover:scale-102 active:scale-95 ${
+                isNarrating
+                  ? "bg-rose-500 hover:bg-rose-400 text-white animate-pulse"
+                  : "bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 shadow-cyan-500/30"
+              }`}
+            >
+              {isNarrating ? (
+                <>
+                  <VolumeX className="w-5 h-5 text-white" />
+                  <span>Pause Voice</span>
+                </>
+              ) : (
+                <>
+                  <Play className="w-5 h-5 fill-slate-950" />
+                  <span>Read Story Aloud to Me!</span>
+                </>
+              )}
             </button>
           </div>
 
         </div>
       </div>
 
-      {
-    /* C. "My Mission" Section */
-  }
-      <section className="p-6 sm:p-8 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-4">
-        <div className="text-xs font-mono uppercase tracking-wider text-cyan-400">
-          Section C · My Mission
-        </div>
-        <h2 className="text-xl sm:text-2xl font-bold text-slate-100">
-          Mission Flight Objectives & Journey
-        </h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-          <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-1">
-            <div className="text-[11px] font-mono text-slate-400 flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-cyan-400" />
-              <span>LAUNCH DATE</span>
-            </div>
-            <div className="text-sm font-semibold text-slate-200">
-              {machine.myMission.launchDate}
-            </div>
-          </div>
-
-          <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-1">
-            <div className="text-[11px] font-mono text-slate-400 flex items-center gap-1.5">
-              <Compass className="w-3.5 h-3.5 text-amber-400" />
-              <span>ARRIVAL DATE</span>
-            </div>
-            <div className="text-sm font-semibold text-slate-200">
-              {machine.myMission.arrivalDate}
-            </div>
-          </div>
-
-          <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-1">
-            <div className="text-[11px] font-mono text-slate-400 flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-rose-400" />
-              <span>TOUCHDOWN TARGET</span>
-            </div>
-            <div className="text-sm font-semibold text-slate-200">
-              {machine.myMission.destination}
-            </div>
-          </div>
-        </div>
-
-        <div className="p-4 rounded-xl bg-slate-950/40 border border-slate-800/80 text-xs text-slate-300 leading-relaxed mt-2">
-          <span className="font-semibold text-slate-200">Primary Objective:</span> {machine.myMission.objective}
-        </div>
-      </section>
-
-      {
-    /* D. "What I Discovered" (Science Section in Simple Language) */
-  }
-      <section className="p-6 sm:p-8 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-4">
-        <div className="text-xs font-mono uppercase tracking-wider text-amber-400">
-          Section D · What I Discovered
-        </div>
-        <h2 className="text-xl sm:text-2xl font-bold text-slate-100">
-          Scientific Discoveries Made Possible
-        </h2>
-        <p className="text-xs sm:text-sm text-slate-400">
-          Explained in straightforward, school-friendly language for curious young minds.
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-          {machine.whatIDiscovered.map((discovery, idx) => <div key={idx} className="p-5 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
-              <div className="w-7 h-7 rounded-lg bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-400 text-xs font-bold font-mono">
-                0{idx + 1}
-              </div>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                {discovery}
-              </p>
-            </div>)}
-        </div>
-      </section>
-
-      {
-    /* E. "Where am I now?" & F. "Fun Fact" */
-  }
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* 3 Short, Kid-Friendly Fact Cards (Minimal Text) */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         
-        {
-    /* E. Where Am I Now */
-  }
-        <div className="p-6 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-3">
-          <div className="text-xs font-mono uppercase tracking-wider text-cyan-400">
-            Section E · Where am I now?
-          </div>
-          <h3 className="text-lg font-bold text-slate-100">Present Condition</h3>
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+        {/* Mission Goal */}
+        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1">
+          <div className="text-xl">🎯</div>
+          <h3 className="text-xs font-bold text-cyan-400 uppercase tracking-wide">Main Goal</h3>
+          <p className="text-xs text-slate-200 font-medium leading-relaxed">
+            {machine.myMission.objective}
+          </p>
+        </div>
+
+        {/* Where is it now? */}
+        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1">
+          <div className="text-xl">📍</div>
+          <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wide">Where is it now?</h3>
+          <p className="text-xs text-slate-200 font-medium leading-relaxed">
             {machine.whereAmINow}
           </p>
-          <div className="pt-2 text-xs font-mono text-slate-400">
-            Coordinates: {machine.coordinates.lat !== void 0 ? `${machine.coordinates.lat}\xB0 N/S, ${machine.coordinates.lng}\xB0 E/W` : `${machine.coordinates.distanceAU} AU from Sun`}
-          </div>
         </div>
 
-        {
-    /* F. Fun Fact */
-  }
-        <div className="p-6 rounded-2xl bg-gradient-to-br from-amber-950/30 to-slate-900/90 border border-amber-500/30 space-y-3">
-          <div className="text-xs font-mono uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Section F · Fun Fact</span>
-          </div>
-          <h3 className="text-lg font-bold text-slate-100">Child-Friendly Trivia</h3>
-          <p className="text-xs sm:text-sm text-amber-200/90 leading-relaxed">
+        {/* Super Fun Fact */}
+        <div className="p-4 rounded-2xl bg-gradient-to-b from-amber-950/30 to-slate-900 border border-amber-400/40 space-y-1">
+          <div className="text-xl">💡</div>
+          <h3 className="text-xs font-bold text-amber-300 uppercase tracking-wide">Fun Fact!</h3>
+          <p className="text-xs text-amber-100 font-medium leading-relaxed">
             {machine.funFact}
           </p>
         </div>
 
       </div>
 
-      {
-    /* NASA Open Image Gallery Section */
-  }
-      <section className="p-6 sm:p-8 rounded-2xl bg-slate-900/50 border border-slate-800 space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-xs font-mono uppercase tracking-wider text-cyan-400">
-              NASA Planetary Archive Gallery
-            </div>
-            <h3 className="text-lg font-bold text-slate-100 mt-1">
-              Historical Mission Imagery
-            </h3>
-          </div>
-          <span className="text-xs font-mono text-slate-500">
-            via images.nasa.gov
-          </span>
-        </div>
+      {/* What Did I Find? (Short Bullet Cards) */}
+      <section className="p-5 sm:p-6 rounded-3xl bg-slate-900/70 border border-slate-800 space-y-3">
+        <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
+          <span>✨ 3 Great Discoveries I Made</span>
+        </h2>
 
-        {loadingImages ? <div className="py-12 text-center text-xs text-slate-500 font-mono animate-pulse">
-            Searching NASA visual library for {machine.name}...
-          </div> : nasaImages.length > 0 ? <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-            {nasaImages.map((img) => <div
-    key={img.nasa_id}
-    className="group aspect-video rounded-lg overflow-hidden bg-slate-950 border border-slate-800 relative cursor-pointer"
-    title={img.title}
-  >
-                <img
-    src={img.imageUrl}
-    alt={img.title}
-    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-    referrerPolicy="no-referrer"
-  />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-2 flex items-end">
-                  <p className="text-[10px] text-slate-200 line-clamp-2 leading-tight">
-                    {img.title}
-                  </p>
-                </div>
-              </div>)}
-          </div> : <div className="py-6 text-center text-xs text-slate-500">
-            Primary archival photography loaded in main header.
-          </div>}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {machine.whatIDiscovered.map((discovery, idx) => (
+            <div key={idx} className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800/80 space-y-1.5">
+              <span className="w-5 h-5 rounded-full bg-cyan-400/20 text-cyan-300 font-black text-xs flex items-center justify-center">
+                {idx + 1}
+              </span>
+              <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                {discovery}
+              </p>
+            </div>
+          ))}
+        </div>
       </section>
 
-      {
-    /* Action Footer */
-  }
-      <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div>
-          <div className="text-xs font-bold text-slate-200">
-            Test Your Knowledge of {machine.name}
+      {/* NASA Photos (Thumbnails) */}
+      {nasaImages.length > 0 && (
+        <section className="p-5 rounded-3xl bg-slate-900/50 border border-slate-800 space-y-3">
+          <div className="text-xs font-bold text-slate-400 uppercase tracking-wide">
+            Real NASA Mission Photos
           </div>
-          <p className="text-xs text-slate-400">
-            Visit the Game Zone to complete the map hunt and unlock the {machine.badge} medal!
-          </p>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {nasaImages.slice(0, 4).map((img) => (
+              <div
+                key={img.nasa_id}
+                className="group aspect-video rounded-xl overflow-hidden bg-slate-950 border border-slate-800 relative cursor-pointer"
+                title={img.title}
+              >
+                <img
+                  src={img.imageUrl}
+                  alt={img.title}
+                  className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-300"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Quick Play Quiz Footer */}
+      <div className="p-5 rounded-2xl bg-gradient-to-r from-cyan-950/50 via-slate-900 to-amber-950/40 border border-cyan-500/30 flex items-center justify-between gap-4">
+        <div>
+          <div className="text-sm font-black text-white">
+            Do you know {machine.name}'s secret?
+          </div>
+          <div className="text-xs text-slate-300">
+            Answer quiz questions & unlock the {machine.badge} medal!
+          </div>
         </div>
 
         <button
-    onClick={() => onNavigate("games")}
-    className="px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-colors cursor-pointer shrink-0"
-  >
-          Play Game Zone
+          onClick={() => onNavigate("games")}
+          className="px-5 py-2.5 bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-300 hover:to-orange-300 text-slate-950 font-black text-xs rounded-xl transition-all shadow-md hover:scale-105 active:scale-95 shrink-0 flex items-center gap-1.5 cursor-pointer"
+        >
+          <Award className="w-4 h-4 text-slate-950" />
+          <span>Play Quiz!</span>
         </button>
       </div>
 
-    </div>;
+    </div>
+  );
 };
