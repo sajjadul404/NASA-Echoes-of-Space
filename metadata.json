@@ -1,0 +1,6 @@
+{
+  "name": "Echoes of Space",
+  "description": "Every machine has a story. Every discovery has a legacy. Explore forgotten NASA machines left on the Moon, Mars, and deep space, and discover the science they made possible.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
